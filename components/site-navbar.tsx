@@ -2,14 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { LogOut, Sparkles } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LogOut, Menu, Sparkles } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 function getInitials(name?: string | null, email?: string | null) {
   const source = (name || email || "U").trim();
@@ -21,6 +27,7 @@ function getInitials(name?: string | null, email?: string | null) {
 }
 
 export default function SiteNavbar() {
+  const router = useRouter();
   const pathname = usePathname();
   const { data: session, isPending } = authClient.useSession();
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -82,11 +89,54 @@ export default function SiteNavbar() {
         <div className="flex items-center gap-2">
           <ModeToggle />
 
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="md:hidden"
+                aria-label="Open navigation menu"
+              >
+                <Menu className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-52 md:hidden">
+              {navItems.map((item) => (
+                <DropdownMenuItem
+                  key={item.href}
+                  onClick={() => router.push(item.href)}
+                  className="cursor-pointer"
+                >
+                  {item.label}
+                </DropdownMenuItem>
+              ))}
+
+              {user ? (
+                <DropdownMenuItem
+                  onClick={() => {
+                    void handleSignOut();
+                  }}
+                  className="cursor-pointer"
+                >
+                  {isSigningOut ? "Logging out..." : "Logout"}
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onClick={() => router.push(ctaHref)}
+                  className="cursor-pointer"
+                >
+                  {ctaLabel}
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           {isPending ? (
             <span className="text-xs text-muted-foreground">Loading...</span>
           ) : user ? (
             <>
-              <div className="flex items-center gap-2 rounded-lg border border-border/70 bg-background px-2 py-1">
+              <div className="hidden items-center gap-2 rounded-lg border border-border/70 bg-background px-2 py-1 md:flex">
                 {user.image ? (
                   <Image
                     src={user.image}
@@ -109,7 +159,7 @@ export default function SiteNavbar() {
                 type="button"
                 size="sm"
                 variant="outline"
-                className="rounded-lg"
+                className="hidden rounded-lg md:inline-flex"
                 onClick={handleSignOut}
                 disabled={isSigningOut}
               >
@@ -118,7 +168,7 @@ export default function SiteNavbar() {
               </Button>
             </>
           ) : (
-            <Button asChild size="sm">
+            <Button asChild size="sm" className="hidden md:inline-flex">
               <Link href={ctaHref}>{ctaLabel}</Link>
             </Button>
           )}

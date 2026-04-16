@@ -48,17 +48,17 @@ export default function Home() {
     <main className="relative isolate min-h-screen overflow-hidden bg-background">
       <DecorativeBackground />
 
-      <section className="mx-auto w-full max-w-6xl px-4 pb-18 pt-8 sm:px-6 lg:px-8 lg:pt-10">
+      <section className="mx-auto w-full max-w-6xl px-4 pb-14 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pt-10">
         <SiteNavbar />
 
-        <div className="mt-12 grid items-center gap-10 lg:mt-16 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="mt-10 grid items-center gap-8 sm:mt-12 lg:mt-16 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-7 animate-in fade-in slide-in-from-left-8 duration-700">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
               Zencode platform overview
             </span>
 
             <div className="space-y-4">
-              <h1 className="font-heading text-4xl leading-tight sm:text-5xl lg:text-6xl">
+              <h1 className="font-heading text-3xl leading-tight sm:text-5xl lg:text-6xl">
                 Your modern coding interview preparation website.
               </h1>
               <p className="max-w-xl text-base text-muted-foreground sm:text-lg">
@@ -68,10 +68,17 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <Button asChild size="lg" className="rounded-xl px-5">
-                <Link href="/login" className="inline-flex items-center gap-2">
-                  Solve Your First Problem
+            <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+              <Button
+                asChild
+                size="lg"
+                className="w-full rounded-xl px-5 sm:w-auto"
+              >
+                <Link
+                  href="/roadmap"
+                  className="inline-flex items-center gap-2"
+                >
+                  Start Solving
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
@@ -80,7 +87,7 @@ export default function Home() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="rounded-xl px-5"
+                className="w-full rounded-xl px-5 sm:w-auto"
               >
                 <Link href="/about">View Platform Tour</Link>
               </Button>
@@ -147,7 +154,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-6xl px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8">
         <div className="animate-in fade-in slide-in-from-bottom-5 duration-700 rounded-3xl border border-border/60 bg-background/75 p-5 backdrop-blur-sm sm:p-7">
           <div className="mb-7 text-center">
             <h2 className="font-heading text-2xl sm:text-3xl">

@@ -339,8 +339,8 @@ export default function InteractiveRoadmap() {
                                         </div>
                                       </div>
 
-                                      <div className="relative flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto mt-2 sm:mt-0">
-                                        <div className="flex items-center gap-3">
+                                      <div className="relative mt-2 flex w-full flex-col gap-2 sm:mt-0 sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-3">
+                                        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                                           {isSolved ? (
                                             <span className="inline-flex items-center gap-1 rounded-md border border-emerald-500/35 bg-emerald-500/10 px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">
                                               <CheckCircle2 className="size-3.5" />
@@ -362,7 +362,7 @@ export default function InteractiveRoadmap() {
                                             {question.averageMinutes}m
                                           </span>
                                         </div>
-                                        <span className="inline-flex shrink-0 items-center justify-center rounded-xl bg-primary px-4 py-2 flex-1 sm:flex-none text-xs font-bold text-primary-foreground shadow-sm transition-transform group-hover:scale-105 active:scale-95">
+                                        <span className="inline-flex w-full shrink-0 items-center justify-center rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-sm transition-transform group-hover:scale-105 active:scale-95 sm:w-auto">
                                           {isSolved ? "Review" : "Solve"}
                                           <Play className="ml-1.5 size-3" />
                                         </span>

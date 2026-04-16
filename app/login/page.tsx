@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ChevronRight, ShieldCheck, Trophy } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -60,10 +61,22 @@ const platformHighlights = [
 ];
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
   const [isSigningIn, setIsSigningIn] = useState<"google" | "github" | null>(
     null,
   );
   const [signInError, setSignInError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (session?.user) {
+      router.replace("/");
+    }
+  }, [router, session?.user]);
+
+  if (session?.user) {
+    return null;
+  }
 
   const getSafeCallbackURL = () => {
     if (typeof window === "undefined") {
