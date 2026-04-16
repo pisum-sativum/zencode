@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Layers3, Sparkles } from "lucide-react";
+import { Layers3, Lock, Sparkles } from "lucide-react";
 
 import EditorPanel, {
   type SupportedLanguage,
@@ -28,7 +28,20 @@ import {
   RunnerApiError,
   type RunnerLanguage,
 } from "@/lib/codezen-runner-client";
+import {
+  DEFAULT_ROADMAP_PROGRESS_STATE,
+  getPreviousTopic,
+  getQuestionProgress,
+  getRoadmapProgressStorageKey,
+  getSubmissionStats,
+  getTopicCompletion,
+  isTopicLocked,
+  readRoadmapProgress,
+  recordQuestionSubmission,
+  writeRoadmapProgress,
+} from "@/lib/roadmap-progress";
 import { cn } from "@/lib/utils";
+import { authClient } from "@/lib/auth-client";
 
 type RunnerLanguageId = Exclude<RunnerLanguage, "js">;
 
@@ -189,6 +202,12 @@ export default function QuandaryWorkspace({
   const hasQuestions = questions.length > 0;
   const initialQuestion = questions[0] ?? EMPTY_QUESTION;
   const runSequenceRef = useRef(0);
+  const { data: session } = authClient.useSession();
+  const storageKey = useMemo(
+    () =>
+      getRoadmapProgressStorageKey(session?.user?.id ?? session?.user?.email),
+    [session?.user?.id, session?.user?.email],
+  );
 
   const [selectedLanguageId, setSelectedLanguageId] =
     useState<RunnerLanguageId>("python");
@@ -202,6 +221,9 @@ export default function QuandaryWorkspace({
   const [activeTestCaseId, setActiveTestCaseId] = useState(1);
   const [runSummary, setRunSummary] = useState<string>(
     "Pick a language, run sample tests, and iterate quickly.",
+  );
+  const [progressState, setProgressState] = useState(
+    DEFAULT_ROADMAP_PROGRESS_STATE,
   );
 
   const selectedQuestion = useMemo(
@@ -217,6 +239,58 @@ export default function QuandaryWorkspace({
       LANGUAGE_OPTIONS.find((language) => language.id === selectedLanguageId),
     [selectedLanguageId],
   );
+
+  const topicCompletion = useMemo(
+    () => getTopicCompletion(progressState, topic.slug),
+    [progressState, topic.slug],
+  );
+
+  const topicLocked = useMemo(
+    () => isTopicLocked(progressState, topic.slug),
+    [progressState, topic.slug],
+  );
+
+  const previousTopic = useMemo(
+    () => getPreviousTopic(topic.slug),
+    [topic.slug],
+  );
+
+  const previousTopicCompletion = useMemo(
+    () =>
+      previousTopic
+        ? getTopicCompletion(progressState, previousTopic.slug)
+        : undefined,
+    [progressState, previousTopic],
+  );
+
+  const submissionStats = useMemo(
+    () => getSubmissionStats(progressState),
+    [progressState],
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const syncProgress = () => {
+      setProgressState(readRoadmapProgress(storageKey));
+    };
+
+    const frameId = window.requestAnimationFrame(syncProgress);
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === storageKey) {
+        syncProgress();
+      }
+    };
+
+    window.addEventListener("storage", onStorage);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, [storageKey]);
 
   useEffect(() => {
     setSelectedQuestionSlug(initialQuestionSlug);
@@ -361,6 +435,17 @@ export default function QuandaryWorkspace({
             : `Run complete: all ${total} sample testcase(s) passed.`
           : `Run complete: ${passedCount}/${total} sample testcase(s) passed.`,
       );
+
+      if (mode === "submit") {
+        setProgressState((previous) => {
+          const updated = recordQuestionSubmission(previous, {
+            questionSlug: selectedQuestion.slug,
+            accepted: allPassed,
+          });
+          writeRoadmapProgress(storageKey, updated);
+          return updated;
+        });
+      }
     } finally {
       if (runSequenceRef.current === runId) {
         setIsRunning(false);
@@ -394,6 +479,29 @@ export default function QuandaryWorkspace({
     );
   }
 
+  if (topicLocked) {
+    return (
+      <section className="rounded-2xl border border-amber-400/35 bg-amber-400/10 p-4 text-amber-700 dark:text-amber-300">
+        <p className="inline-flex items-center gap-2 text-sm font-semibold">
+          <Lock className="size-4" />
+          Topic locked
+        </p>
+        <p className="mt-2 text-sm">
+          Complete {previousTopic?.name ?? "the previous topic"} before entering{" "}
+          {topic.name}.
+        </p>
+        <p className="mt-1 text-xs">
+          Progress in {previousTopic?.name ?? "previous topic"}:{" "}
+          {previousTopicCompletion?.completedCount ?? 0}/
+          {previousTopicCompletion?.totalCount ?? 0} solved.
+        </p>
+        <Button asChild className="mt-4 rounded-lg" size="sm">
+          <Link href="/roadmap">Back to roadmap</Link>
+        </Button>
+      </section>
+    );
+  }
+
   return (
     <div className="mt-2 space-y-4">
       <div className="rounded-2xl border border-border/60 bg-linear-to-r from-primary/8 via-background to-secondary/50 px-4 py-3">
@@ -410,6 +518,19 @@ export default function QuandaryWorkspace({
           <span className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-background/80 px-2.5 py-1 text-xs text-muted-foreground">
             <Layers3 className="size-3.5" />
             {selectedLevel.shortLabel} {selectedLevel.label}
+          </span>
+        </div>
+
+        <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
+          <span className="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-emerald-600 dark:text-emerald-400">
+            Topic progress: {topicCompletion.completedCount}/
+            {topicCompletion.totalCount} solved
+          </span>
+          <span className="rounded-full border border-border/60 bg-background/80 px-2.5 py-1">
+            Submissions tracked: {submissionStats.totalSubmissions}
+          </span>
+          <span className="rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-primary">
+            Accepted submissions: {submissionStats.acceptedSubmissions}
           </span>
         </div>
 
@@ -450,11 +571,16 @@ export default function QuandaryWorkspace({
                   onClick={() => setSelectedQuestionSlug(question.slug)}
                   className={cn(
                     "cursor-pointer",
+                    getQuestionProgress(progressState, question.slug)
+                      ?.accepted && "font-semibold",
                     selectedQuestion.slug === question.slug &&
                       "bg-primary/10 text-primary",
                   )}
                 >
                   {question.title}
+                  {getQuestionProgress(progressState, question.slug)?.accepted
+                    ? " - Solved"
+                    : ""}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
