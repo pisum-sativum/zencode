@@ -1,13 +1,24 @@
 import Link from "next/link";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { ArrowRight, MapPinned } from "lucide-react";
 
+import { auth } from "@/lib/auth";
 import DecorativeBackground from "@/components/decorative-background";
 import InteractiveRoadmap from "@/components/roadmap/interactive-roadmap";
 import SiteNavbar from "@/components/site-navbar";
 import { Button } from "@/components/ui/button";
 import BackButton from "@/components/back-button";
 
-export default function RoadmapPage() {
+export default async function RoadmapPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    redirect("/login?next=%2Froadmap");
+  }
+
   return (
     <main className="relative isolate min-h-screen overflow-hidden bg-background">
       <DecorativeBackground />

@@ -1,6 +1,9 @@
 import DecorativeBackground from "@/components/decorative-background";
 import BackButton from "@/components/back-button";
 import QuandaryWorkspace from "@/components/quandary/quandary-workspace";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import {
   getQuestionsByTopicAndLevel,
   ROADMAP_LEVELS,
@@ -25,6 +28,14 @@ export default async function QuandaryPage({
 }: {
   searchParams: QuandarySearchParams;
 }) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    redirect("/login?next=%2Fquandary");
+  }
+
   const params = await searchParams;
 
   const selection = resolveRoadmapSelection({

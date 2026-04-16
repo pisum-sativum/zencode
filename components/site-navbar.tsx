@@ -32,7 +32,6 @@ export default function SiteNavbar() {
   const navItems = [
     { href: "/", label: "Explore" },
     { href: "/roadmap", label: "Roadmap" },
-    { href: "/quandary", label: "Quandary" },
     { href: "/about", label: "About" },
   ];
 

@@ -65,6 +65,20 @@ export default function LoginPage() {
   );
   const [signInError, setSignInError] = useState<string | null>(null);
 
+  const getSafeCallbackURL = () => {
+    if (typeof window === "undefined") {
+      return "/";
+    }
+
+    const nextPath = new URLSearchParams(window.location.search).get("next");
+
+    if (nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//")) {
+      return nextPath;
+    }
+
+    return "/";
+  };
+
   const handleGoogleSignIn = async () => {
     try {
       setIsSigningIn("google");
@@ -72,7 +86,7 @@ export default function LoginPage() {
 
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: getSafeCallbackURL(),
       });
     } catch {
       setSignInError("Unable to start Google sign in. Please try again.");
@@ -87,7 +101,7 @@ export default function LoginPage() {
 
       await authClient.signIn.social({
         provider: "github",
-        callbackURL: "/",
+        callbackURL: getSafeCallbackURL(),
       });
     } catch {
       setSignInError("Unable to start GitHub sign in. Please try again.");
