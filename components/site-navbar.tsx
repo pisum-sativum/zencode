@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogOut, Sparkles } from "lucide-react";
@@ -88,9 +89,11 @@ export default function SiteNavbar() {
             <>
               <div className="flex items-center gap-2 rounded-lg border border-border/70 bg-background px-2 py-1">
                 {user.image ? (
-                  <img
+                  <Image
                     src={user.image}
                     alt={user.name ?? "User"}
+                    width={28}
+                    height={28}
                     className="size-7 rounded-full object-cover"
                   />
                 ) : (
