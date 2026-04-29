@@ -152,7 +152,6 @@ export function writeRoadmapProgress(
   try {
     window.localStorage.setItem(storageKey, JSON.stringify(state));
   } catch {
-    // Ignore quota/storage write failures.
   }
 }
 

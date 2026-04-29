@@ -58,7 +58,6 @@ const GENERIC_STARTER_CODE: Record<RunnerLanguageId, string> = {
 
 
 def solve(data: str) -> str:
-    # TODO: implement solution
     return data.strip()
 
 
@@ -68,7 +67,6 @@ if __name__ == "__main__":
   javascript: `const fs = require("fs");
 
 function solve(input) {
-  // TODO: implement solution
   return input.trim();
 }
 
@@ -79,7 +77,6 @@ import java.io.InputStreamReader;
 
 public class Main {
   static String solve(String data) {
-    // TODO: implement solution
     return data.trim();
   }
 
@@ -102,7 +99,6 @@ public class Main {
 using namespace std;
 
 string solve(const string& input) {
-  // TODO: implement solution
   return input;
 }
 

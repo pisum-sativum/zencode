@@ -109,7 +109,6 @@ export default function InteractiveRoadmap() {
         </div>
       </div>
 
-      {/* Decorative vertical timeline line */}
       <div className="absolute left-[39px] sm:left-[59px] top-24 bottom-24 w-[2px] bg-gradient-to-b from-primary/80 via-primary/30 to-background/5 rounded-full z-0" />
 
       <div className="space-y-8 sm:space-y-12 relative z-10">
@@ -129,7 +128,6 @@ export default function InteractiveRoadmap() {
 
           return (
             <div key={topic.id} className="relative group">
-              {/* Timeline marker node */}
               <div className="absolute left-0 sm:left-5 top-0 flex items-center justify-center z-10">
                 <div
                   className={cn(
@@ -147,7 +145,6 @@ export default function InteractiveRoadmap() {
                 </div>
               </div>
 
-              {/* Topic Content Card */}
               <div className="ml-16 sm:ml-24 z-20 relative">
                 <button
                   onClick={() => toggleTopic(topic.id)}
@@ -206,7 +203,6 @@ export default function InteractiveRoadmap() {
                   </div>
                 </button>
 
-                {/* Expanded questions panel */}
                 <div
                   className={cn(
                     "grid transition-all duration-500 ease-in-out",
@@ -232,7 +228,6 @@ export default function InteractiveRoadmap() {
                         </div>
                       ) : null}
 
-                      {/* Study Resources Section */}
                       {!isLocked &&
                       topic.resources &&
                       (topic.resources.videos?.length ||
@@ -317,7 +312,6 @@ export default function InteractiveRoadmap() {
                                           "border-emerald-500/40 bg-emerald-500/6",
                                       )}
                                     >
-                                      {/* Hover gradient effect */}
                                       <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
                                       <div className="relative flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
