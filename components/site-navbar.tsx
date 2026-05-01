@@ -59,7 +59,7 @@ export default function SiteNavbar() {
           <div className="grid size-8 place-items-center rounded-md bg-primary text-primary-foreground">
             <Sparkles className="size-4" />
           </div>
-          <p className="font-heading text-xl leading-none">Zencode</p>
+          <p className="font-heading text-xl leading-tight">Zencode</p>
         </div>
 
         <div className="hidden items-center gap-1 text-sm md:flex">

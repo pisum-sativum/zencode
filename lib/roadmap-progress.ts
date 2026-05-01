@@ -151,8 +151,7 @@ export function writeRoadmapProgress(
 
   try {
     window.localStorage.setItem(storageKey, JSON.stringify(state));
-  } catch {
-  }
+  } catch {}
 }
 
 export function recordQuestionSubmission(

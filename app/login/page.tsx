@@ -140,7 +140,7 @@ export default function LoginPage() {
             </span>
 
             <div className="space-y-4">
-              <h1 className="font-heading text-4xl leading-tight sm:text-5xl lg:text-6xl">
+              <h1 className="font-heading text-4xl leading-snug sm:text-5xl lg:text-6xl">
                 Log in and continue your Zencode journey.
               </h1>
               <p className="max-w-xl text-base text-muted-foreground sm:text-lg">

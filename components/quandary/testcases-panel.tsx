@@ -108,50 +108,54 @@ export default function TestcasesPanel({
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Runtime Output
         </p>
-        <pre className="mt-2 overflow-x-auto text-sm">
-          {hasRun
-            ? (activeResult?.error ?? activeResult?.actualOutput ?? "No output")
-            : "Run your code to see output."}
-        </pre>
+        <div className="mt-2 min-h-[160px] max-h-[240px] overflow-auto rounded-lg border border-border/50 bg-secondary/20 p-3 text-sm">
+          <pre className="whitespace-pre-wrap text-foreground">
+            {hasRun
+              ? (activeResult?.error ??
+                activeResult?.actualOutput ??
+                "No output")
+              : "Run your code to see output."}
+          </pre>
 
-        {hasRun && activeResult?.stderr && (
-          <>
-            <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              stderr
+          {hasRun && activeResult?.stderr && (
+            <div className="mt-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                stderr
+              </p>
+              <pre className="mt-2 whitespace-pre-wrap text-xs text-amber-700 dark:text-amber-300">
+                {activeResult.stderr}
+              </pre>
+            </div>
+          )}
+
+          {hasRun && activeResult && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              Status: {activeResult.status ?? "unknown"}
+              {typeof activeResult.exitCode === "number"
+                ? ` | Exit code: ${activeResult.exitCode}`
+                : ""}
+              {typeof activeResult.durationMs === "number"
+                ? ` | Duration: ${activeResult.durationMs}ms`
+                : ""}
+              {activeResult.timedOut ? " | Timed out" : ""}
             </p>
-            <pre className="mt-2 overflow-x-auto text-xs text-amber-700 dark:text-amber-300">
-              {activeResult.stderr}
-            </pre>
-          </>
-        )}
+          )}
 
-        {hasRun && activeResult && (
-          <p className="mt-2 text-xs text-muted-foreground">
-            Status: {activeResult.status ?? "unknown"}
-            {typeof activeResult.exitCode === "number"
-              ? ` | Exit code: ${activeResult.exitCode}`
-              : ""}
-            {typeof activeResult.durationMs === "number"
-              ? ` | Duration: ${activeResult.durationMs}ms`
-              : ""}
-            {activeResult.timedOut ? " | Timed out" : ""}
-          </p>
-        )}
-
-        {hasRun && activeResult && (
-          <p
-            className={cn(
-              "mt-2 text-xs font-medium",
-              activeResult.passed
-                ? "text-emerald-600 dark:text-emerald-400"
-                : "text-rose-600 dark:text-rose-400",
-            )}
-          >
-            {activeResult.passed
-              ? "Accepted for this testcase."
-              : "Wrong answer for this testcase."}
-          </p>
-        )}
+          {hasRun && activeResult && (
+            <p
+              className={cn(
+                "mt-2 text-xs font-medium",
+                activeResult.passed
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : "text-rose-600 dark:text-rose-400",
+              )}
+            >
+              {activeResult.passed
+                ? "Accepted for this testcase."
+                : "Wrong answer for this testcase."}
+            </p>
+          )}
+        </div>
       </article>
     </section>
   );

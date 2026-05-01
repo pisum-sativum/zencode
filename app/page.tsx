@@ -58,7 +58,7 @@ export default function Home() {
             </span>
 
             <div className="space-y-4">
-              <h1 className="font-heading text-3xl leading-tight sm:text-5xl lg:text-6xl">
+              <h1 className="font-heading text-3xl leading-snug sm:text-5xl lg:text-6xl">
                 Your modern coding interview preparation website.
               </h1>
               <p className="max-w-xl text-base text-muted-foreground sm:text-lg">

@@ -51,7 +51,7 @@ export default function ProblemStatement({ question }: ProblemStatementProps) {
           </span>
         </div>
 
-        <h1 className="mt-3 font-heading text-2xl leading-tight sm:text-3xl">
+        <h1 className="mt-3 font-heading text-2xl leading-snug sm:text-3xl">
           {question.title}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground sm:text-base">

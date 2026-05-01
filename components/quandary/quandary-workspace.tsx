@@ -314,6 +314,11 @@ export default function QuandaryWorkspace({
   };
 
   const executeRun = async (mode: "run" | "submit") => {
+    console.info("[quandary] run requested", {
+      mode,
+      question: selectedQuestion.slug,
+      language: selectedLanguageId,
+    });
     const runId = runSequenceRef.current + 1;
     runSequenceRef.current = runId;
 
@@ -334,6 +339,11 @@ export default function QuandaryWorkspace({
         }
 
         try {
+          console.info("[quandary] executing testcase", {
+            runId,
+            index,
+            testCaseId: testCase.id,
+          });
           const response = await executeAndResolve(
             {
               language: selectedLanguageId,
@@ -352,6 +362,11 @@ export default function QuandaryWorkspace({
             return;
           }
 
+          console.info("[quandary] runner response", {
+            runId,
+            testCaseId: testCase.id,
+            status: response?.status,
+          });
           if (!response) {
             nextResults[testCase.id] = {
               actualOutput: "",
@@ -398,6 +413,11 @@ export default function QuandaryWorkspace({
             };
           }
         } catch (error) {
+          console.error("[quandary] runner error", {
+            runId,
+            testCaseId: testCase.id,
+            error,
+          });
           nextResults[testCase.id] = {
             actualOutput: "",
             passed: false,
